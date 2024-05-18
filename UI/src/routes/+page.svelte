@@ -1,59 +1,90 @@
 <script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+    let userAddress = null;
+
+    async function connectWallet() {
+        if (window.ethereum) {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            if (accounts.length > 0) {
+                userAddress = accounts[0];
+            } else {
+                alert('No accounts found');
+            }
+        } else {
+            alert('No ethereum wallet found');
+        }
+    }
 </script>
 
-<svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
-</svelte:head>
-
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
-</section>
-
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #f4f4f9;
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
 
-	h1 {
-		width: 100%;
-	}
+    h1 {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
 
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
+    p {
+        font-size: 1.25rem;
+        color: #4caf50;
+    }
 
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
+    button {
+        background-color: #1e90ff;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #005bbb;
+    }
+
+    .options {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .options button {
+        background-color: #ff9800;
+    }
+
+    .options button:hover {
+        background-color: #e68900;
+    }
 </style>
+
+<div class="container">
+    <h1>Welcome to FairTicketing!</h1>
+    
+    {#if userAddress}
+        <p>
+            Successfully connected with account <strong>{userAddress}</strong>
+        </p>
+        <div class="options">
+            <button on:click={() => alert('Create event clicked')}>Create event</button>
+            <button on:click={() => alert('Resell ticket clicked')}>Resell ticket</button>
+            <button on:click={() => alert('Purchase ticket clicked')}>Purchase ticket</button>
+        </div>
+    {:else}
+        <button on:click={connectWallet}>
+            Connect with Wallet
+        </button>
+    {/if}
+</div>
