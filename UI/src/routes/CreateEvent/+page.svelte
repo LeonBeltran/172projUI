@@ -14,8 +14,7 @@
             description: eventDescription,
             price: ticketPrice,
         };
-
-        // Log the event data for now (you'll send this to your backend later)
+        
         console.log('Event Data:', eventData);
 
         // Example: Send data to your backend
