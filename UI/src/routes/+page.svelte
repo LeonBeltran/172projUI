@@ -1,4 +1,6 @@
 <script>
+    import { goto } from '$app/navigation';
+
     let userAddress = null;
 
     async function connectWallet() {
@@ -78,9 +80,9 @@
             Successfully connected with account <strong>{userAddress}</strong>
         </p>
         <div class="options">
-            <button on:click={() => alert('Create event clicked')}>Create event</button>
-            <button on:click={() => alert('Resell ticket clicked')}>Resell ticket</button>
-            <button on:click={() => alert('Purchase ticket clicked')}>Purchase ticket</button>
+            <button on:click={() => goto('/EventList')}>Purchase ticket from existing events</button>
+            <button on:click={() => goto('/CreateEvent')}>Create new event</button>
+            <button on:click={() => goto('/ResellTicket')}>Resell your ticket</button>
         </div>
     {:else}
         <button on:click={connectWallet}>

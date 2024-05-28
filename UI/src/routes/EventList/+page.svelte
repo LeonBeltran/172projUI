@@ -6,36 +6,67 @@
 //Confirmation of purchase / receipt
 
   let events = [
-    {
-      id: 1,
-      name: "Event A",
-      location: "Venue A",
-      date: "2024-06-01",
-      time: "19:00",
-      description: "Insert description 1",
-      price: 0.004
-    },
-    {
-      id: 2,
-      name: "Event B",
-      location: "Venue B",
-      date: "2024-06-02",
-      time: "20:00",
-      description: "Insert description 2",
-      price: 0.0004
-    },
-  ];
+  {
+    id: 1,
+    name: "Event A",
+    location: "Venue A",
+    date: "2024-06-01",
+    time: "19:00",
+    description: "Insert description 1",
+    price: 0.004
+  },
+  {
+    id: 2,
+    name: "Event B",
+    location: "Venue B",
+    date: "2024-06-02",
+    time: "20:00",
+    description: "Insert description 2",
+    price: 0.0004
+  },
+];
 
-  let selectedEvent = null;
-  let confirmed = false;
+let selectedEvent = null;
+let confirmed = false;
 
-  function handleEventClick(event) {
-    selectedEvent = event;
-  }
+function handleEventClick(event) {
+  selectedEvent = event;
+}
 
-  function confirmPurchase() {
+async function confirmPurchase() {
+  // Check if MetaMask is installed and connected
+  if (typeof window.ethereum !== 'undefined') {
+    // Request account access
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+    const account = accounts[0];
+
+    // Convert the price to Wei
+    const priceWei = window.ethereum.request({
+      method: 'web3_fromWei',
+      params: [selectedEvent.price.toString(), 'ether'],
+      to: 'web3.toWei'
+    });
+
+    // Send the transaction
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from: account,
+        to: "0x30E6Ba84Aff8277390B29cfE66c4735dE6D9767c", // contract address
+        value: priceWei,
+        gasPrice: '0x0', // Use the default gas price
+        gas: '0x0' // Use the default gas limit
+      }]
+    });
+
+    // Set confirmation flag
     confirmed = true;
+  } else {
+    // MetaMask is not installed
+    alert('Please install MetaMask to purchase tickets.');
   }
+}
 </script>
 
 <style>
