@@ -1,7 +1,12 @@
 <!-- Obtained via ChatGPT and modified to fit needs -->
-<script>
+<script lang=ts>
+    import { ethers } from "ethers";
+    import type { JsonRpcSigner } from "ethers";
+    import { Contract } from "ethers";
+    import { ABI } from "../abi";
+    
     // Temporary database with the same format as the create event form
-    let events = [
+    let tickets = [
         { id: 1, name: 'Concert A', location: 'Venue A', dateTime: '2024-06-01T19:00', description: 'A great concert', price: 50 },
         { id: 2, name: 'Concert B', location: 'Venue B', dateTime: '2024-06-10T20:00', description: 'Another great concert', price: 75 },
         { id: 3, name: 'Concert C', location: 'Venue C', dateTime: '2024-07-15T18:00', description: 'Yet another great concert', price: 100 },
@@ -11,7 +16,7 @@
     ];
 
     // State to track resale details
-    let resaleDetails = events.map(event => ({
+    let resaleDetails = tickets.map(event => ({
         ...event,
         willSell: false,
         resalePrice: event.price
@@ -28,6 +33,14 @@
         const validResales = resaleDetails.filter(item => item.willSell && parseFloat(item.resalePrice) >= item.price && parseFloat(item.resalePrice) <= item.price * 1.1);
         console.log('Resale Details:', validResales);
     }
+
+    const initializeContract = async (signer: JsonRpcSigner) => {
+        return new Contract(
+        "0x30E6Ba84Aff8277390B29cfE66c4735dE6D9767c",
+        ABI,
+        signer
+        );
+    };
 </script>
 
 <svelte:head>
@@ -49,7 +62,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#each resaleDetails as { id, name, location, dateTime, description, price, willSell, resalePrice }}
+                {#each resaleDetails as { id, name, location, dateTime, price, willSell, resalePrice }}
                     <tr>
                         <td>{name}</td>
                         <td>{location}</td>
