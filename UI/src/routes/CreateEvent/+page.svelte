@@ -32,7 +32,7 @@
 
         await contract.createTicket(tokenURI, totalTickets2, ticketPrice2, ticketEndDate, {value : 10});
 
-        let ticket = await contract.getTicketInfo(tokenURI);
+        let ticket = await contract.getTicketInfo(1);
         console.log(ticket)
 
         alert("Successfully created new event!")
