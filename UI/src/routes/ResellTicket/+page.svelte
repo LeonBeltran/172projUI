@@ -5,39 +5,42 @@
     import { Contract } from "ethers";
     import { ABI } from "../abi";
     
-    // let tickets = []
-    let tickets = [
-        {
-        id: 1,
-        name: "Event A",
-        location: "Venue A",
-        date: "2024-06-01",
-        time: "19:00",
-        description: "Insert description 1",
-        price: 0.004
-        },
-        {
-        id: 2,
-        name: "Event B",
-        location: "Venue B",
-        date: "2024-06-02",
-        time: "20:00",
-        description: "Insert description 2",
-        price: 0.0004
-        },
-    ];
+    let tickets = []
+    // let tickets = [
+    //     {
+    //     id: 1,
+    //     name: "Event A",
+    //     location: "Venue A",
+    //     date: "2024-06-01",
+    //     time: "19:00",
+    //     description: "Insert description 1",
+    //     price: 0.004
+    //     },
+    //     {
+    //     id: 2,
+    //     name: "Event B",
+    //     location: "Venue B",
+    //     date: "2024-06-02",
+    //     time: "20:00",
+    //     description: "Insert description 2",
+    //     price: 0.0004
+    //     },
+    // ];
 
 
     async function getTickets() {
         const { ethereum } = window as any;
         const provider = new ethers.BrowserProvider(ethereum);
         const account = await provider.send("eth_accounts", []);
-        console.log(account);
+        console.log("Account: " + account);
 
         const signer = await provider.getSigner();
         const contract = await initializeContract(signer);
-        tickets = await contract.getUserTickets(signer)
-        console.log("tickets: " + tickets)
+        let ticketIDs = await contract.getUserTickets(signer)
+        for (let tokenID in ticketIDs) {
+            let ticket = await contract.getTicketInfo(tokenID)
+            tickets.concat(ticket)
+        }
     };
 
     getTickets()
@@ -46,7 +49,7 @@
     let resaleDetails = tickets.map(event => ({
         ...event,
         willSell: false,
-        resalePrice: event.price
+        resalePrice: event.ticketPrice
     }));
 
     function handleInputChange(event, id) {
@@ -63,7 +66,7 @@
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0x5c6ac0b8fc1b17a3fa11bca9f4f0dcc552a0d529",
+        "0x593CE72a79b197a2980c0f74CB22371Fff175118",
         ABI,
         signer
         );
