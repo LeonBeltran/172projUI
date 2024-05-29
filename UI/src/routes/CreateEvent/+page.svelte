@@ -1,37 +1,56 @@
 <!-- Obtained via ChatGPT and modified to fit needs -->
-<script>
-    let eventName = '';
-    let eventLocation = '';
-    let eventDateTime = '';
-    let eventDescription = '';
-    let ticketPrice = '';
+<script lang=ts>
+    import { ethers } from "ethers";
+    import type { JsonRpcSigner } from "ethers";
+    import { Contract } from "ethers";
+    import { ABI } from "../abi";
 
-    function handleSubmit() {
+    let tokenURI = '';
+    let totalTickets = '';
+    let ticketPrice = '';
+    let ticketEndDate = '';
+
+    async function test() {
+        const { ethereum } = window as any;
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const contract = await initializeContract(signer);
+
+        let creationFee = await contract.getCreationFeePercentage()
+        console.log("Fee: " + creationFee)
+    }
+
+    test()
+
+    async function handleSubmit() {
         const eventData = {
-            name: eventName,
-            location: eventLocation,
-            dateTime: eventDateTime,
-            description: eventDescription,
-            price: ticketPrice,
+            tokenURI: tokenURI,
+            totalTickets: totalTickets,
+            ticketPrice: ticketPrice,
+            ticketEndDate: ticketEndDate,
         };
         
         console.log('Event Data:', eventData);
 
-        // Example: Send data to your backend
-        // fetch('/api/events', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(eventData)
-        // }).then(response => {
-        //     if (response.ok) {
-        //         alert('Event created successfully!');
-        //     } else {
-        //         alert('Failed to create event.');
-        //     }
-        // });
+        const { ethereum } = window as any;
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const contract = await initializeContract(signer);
+
+        totalTickets = parseInt(totalTickets)
+        ticketPrice = parseFloat(ticketPrice)
+
+        await contract.createTicket(tokenURI, totalTickets, ticketPrice, ticketEndDate)
+        alert("Successfully created new event!")
     }
+
+    const initializeContract = async (signer: JsonRpcSigner) => {
+        return new Contract(
+        "0x30E6Ba84Aff8277390B29cfE66c4735dE6D9767c",
+        ABI,
+        signer
+        );
+    };
 </script>
 
 <svelte:head>
@@ -43,25 +62,22 @@
     <h1>Create a New Event</h1>
     <form on:submit|preventDefault={handleSubmit}>
         <div>
-            <label for="eventName">Event Name:</label>
-            <input id="eventName" type="text" bind:value={eventName} required />
+            <label for="tokenURI">Event Name:</label>
+            <input id="tokenURI" type="text" bind:value={tokenURI} required />
         </div>
         <div>
-            <label for="eventLocation">Event Location:</label>
-            <input id="eventLocation" type="text" bind:value={eventLocation} required />
+            <label for="totalTikets">Total Tickets:</label>
+            <input id="totalTickets" type="number" step="1" min="0" bind:value={totalTickets} required />
         </div>
         <div>
-            <label for="eventDateTime">Event Date and Time:</label>
-            <input id="eventDateTime" type="datetime-local" bind:value={eventDateTime} required />
+            <label for="ticketPrice">Ticket Price in ETH:</label>
+            <input id="ticketPrice" type="number" step=0.000001 min="0" bind:value={ticketPrice} required />
         </div>
         <div>
-            <label for="eventDescription">Event Description:</label>
-            <textarea id="eventDescription" bind:value={eventDescription} required></textarea>
+            <label for="ticketEndDate">Ticket Expiry Date</label>
+            <input id="ticketEndDate" type="text" bind:value={ticketEndDate} required />
         </div>
-        <div>
-            <label for="ticketPrice">Ticket Price (Php):</label>
-            <input id="ticketPrice" type="number" step="0.01" min="0" bind:value={ticketPrice} required />
-        </div>
+        
         <div class="button-container">
             <button type="submit">Create Event</button>
         </div>

@@ -5,15 +5,42 @@
     import { Contract } from "ethers";
     import { ABI } from "../abi";
     
-    // Temporary database with the same format as the create event form
+    // let tickets = []
     let tickets = [
-        { id: 1, name: 'Concert A', location: 'Venue A', dateTime: '2024-06-01T19:00', description: 'A great concert', price: 50 },
-        { id: 2, name: 'Concert B', location: 'Venue B', dateTime: '2024-06-10T20:00', description: 'Another great concert', price: 75 },
-        { id: 3, name: 'Concert C', location: 'Venue C', dateTime: '2024-07-15T18:00', description: 'Yet another great concert', price: 100 },
-		{ id: 4, name: 'Concert A', location: 'Venue A', dateTime: '2024-06-01T19:00', description: 'A great concert', price: 50 },
-        { id: 5, name: 'Concert B', location: 'Venue B', dateTime: '2024-06-10T20:00', description: 'Another great concert', price: 75 },
-        { id: 6, name: 'Concert C', location: 'Venue C', dateTime: '2024-07-15T18:00', description: 'Yet another great concert', price: 100 }
+        {
+        id: 1,
+        name: "Event A",
+        location: "Venue A",
+        date: "2024-06-01",
+        time: "19:00",
+        description: "Insert description 1",
+        price: 0.004
+        },
+        {
+        id: 2,
+        name: "Event B",
+        location: "Venue B",
+        date: "2024-06-02",
+        time: "20:00",
+        description: "Insert description 2",
+        price: 0.0004
+        },
     ];
+
+
+    async function getTickets() {
+        const { ethereum } = window as any;
+        const provider = new ethers.BrowserProvider(ethereum);
+        const account = await provider.send("eth_accounts", []);
+        console.log(account);
+
+        const signer = await provider.getSigner();
+        const contract = await initializeContract(signer);
+        tickets = await contract.getUserTickets(signer)
+        console.log("tickets: " + tickets)
+    };
+
+    getTickets()
 
     // State to track resale details
     let resaleDetails = tickets.map(event => ({
@@ -50,23 +77,24 @@
 
 <div class="text-column">
     <h1>Ticket Resale Page</h1>
+    <p>If no tickets pop up, check that you connected your wallet and you have purchased tickets.</p>
     <form on:submit|preventDefault={handleSubmit}>
         <table>
             <thead>
                 <tr>
-                    <th style="width: 20%;">Event Name</th>
+                    <th style="width: 30%;">Event Name</th>
                     <th style="width: 25%;">Location</th>
-                    <th style="width: 15%;">Date and Time</th>
-                    <th style="width: 10%;">Sell Ticket</th>
-                    <th style="width: 10%;">Resale Price</th>
+                    <th style="width: 25%;">Date and Time</th>
+                    <th style="width: 5%;">Sell Ticket</th>
+                    <th style="width: 15%;">Resale Price</th>
                 </tr>
             </thead>
             <tbody>
-                {#each resaleDetails as { id, name, location, dateTime, price, willSell, resalePrice }}
+                {#each resaleDetails as { id, name, location, date, time, price, willSell, resalePrice }}
                     <tr>
                         <td>{name}</td>
                         <td>{location}</td>
-                        <td>{new Date(dateTime).toLocaleString()}</td>
+                        <td>{date} {time}</td>
                         <td>
                             <input 
                                 type="checkbox" 
