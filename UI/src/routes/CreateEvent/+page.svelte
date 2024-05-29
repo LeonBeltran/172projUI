@@ -10,17 +10,17 @@
     let ticketPrice = '';
     let ticketEndDate = '';
 
-    async function test() {
-        const { ethereum } = window as any;
-        const provider = new ethers.BrowserProvider(ethereum);
-        const signer = await provider.getSigner();
-        const contract = await initializeContract(signer);
+    // async function test() {
+    //     const { ethereum } = window as any;
+    //     const provider = new ethers.BrowserProvider(ethereum);
+    //     const signer = await provider.getSigner();
+    //     const contract = await initializeContract(signer);
 
-        let creationFee = await contract.getCreationFeePercentage()
-        console.log("Fee: " + creationFee)
-    }
+    //     let creationFee = await contract.getCreationFeePercentage()
+    //     console.log("Fee: " + creationFee)
+    // }
 
-    test()
+    // test()
 
     async function handleSubmit() {
         const eventData = {
