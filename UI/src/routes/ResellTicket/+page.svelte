@@ -1,56 +1,36 @@
-<!-- Obtained via ChatGPT and modified to fit needs -->
-<script lang=ts>
+<script lang="ts">
     import { ethers } from "ethers";
     import type { JsonRpcSigner } from "ethers";
     import { Contract } from "ethers";
     import { ABI } from "../abi";
-    
-    let tickets = []
-    // let tickets = [
-    //     {
-    //     id: 1,
-    //     name: "Event A",
-    //     location: "Venue A",
-    //     date: "2024-06-01",
-    //     time: "19:00",
-    //     description: "Insert description 1",
-    //     price: 0.004
-    //     },
-    //     {
-    //     id: 2,
-    //     name: "Event B",
-    //     location: "Venue B",
-    //     date: "2024-06-02",
-    //     time: "20:00",
-    //     description: "Insert description 2",
-    //     price: 0.0004
-    //     },
-    // ];
 
+    let tickets = [];
 
     async function getTickets() {
         const { ethereum } = window as any;
         const provider = new ethers.BrowserProvider(ethereum);
-        const account = await provider.send("eth_accounts", []);
-        console.log("Account: " + account);
-
         const signer = await provider.getSigner();
         const contract = await initializeContract(signer);
-        let ticketIDs = await contract.getUserTickets(signer)
-        for (let tokenID in ticketIDs) {
-            let ticket = await contract.getTicketInfo(tokenID)
-            tickets.concat(ticket)
+
+        const account = await signer.getAddress();
+        const ticketIDs = await contract.getUserTickets(account);
+
+        for (const tokenID of ticketIDs) {
+            const ticket = await contract.getTicketInfo(tokenID);
+            tickets = [...tickets, { ...ticket, id: tokenID }];
         }
+
+        // Update resaleDetails after fetching tickets
+        resaleDetails = tickets.map(event => ({
+            ...event,
+            willSell: false,
+            resalePrice: ethers.utils.formatEther(event.ticketPrice)
+        }));
     };
 
-    getTickets()
+    let resaleDetails = [];
 
-    // State to track resale details
-    let resaleDetails = tickets.map(event => ({
-        ...event,
-        willSell: false,
-        resalePrice: event.ticketPrice
-    }));
+    getTickets();
 
     function handleInputChange(event, id) {
         const { name, value, checked } = event.target;
@@ -59,9 +39,18 @@
         );
     }
 
-    function handleSubmit() {
-        const validResales = resaleDetails.filter(item => item.willSell && parseFloat(item.resalePrice) >= item.price && parseFloat(item.resalePrice) <= item.price * 1.1);
+    async function handleSubmit() {
+        const validResales = resaleDetails.filter(item => item.willSell && parseFloat(item.resalePrice) >= parseFloat(ethers.utils.formatEther(item.ticketPrice)) && parseFloat(item.resalePrice) <= parseFloat(ethers.utils.formatEther(item.ticketPrice)) * 1.1);
         console.log('Resale Details:', validResales);
+
+        const { ethereum } = window as any;
+        const provider = new ethers.BrowserProvider(ethereum);
+        const signer = await provider.getSigner();
+        const contract = await initializeContract(signer);
+
+        for (const resale of validResales) {
+            await contract.resellTicket(resale.id, ethers.utils.parseEther(resale.resalePrice.toString()));
+        }
     }
 
     const initializeContract = async (signer: JsonRpcSigner) => {
@@ -93,7 +82,7 @@
                 </tr>
             </thead>
             <tbody>
-                {#each resaleDetails as { id, name, location, date, time, price, willSell, resalePrice }}
+                {#each resaleDetails as { id, name, location, date, time, ticketPrice, willSell, resalePrice }}
                     <tr>
                         <td>{name}</td>
                         <td>{location}</td>
@@ -110,8 +99,8 @@
                             <input 
                                 type="number" 
                                 name="resalePrice" 
-                                min={price} 
-                                max={price * 1.1} 
+                                min={parseFloat(ethers.utils.formatEther(ticketPrice))} 
+                                max={parseFloat(ethers.utils.formatEther(ticketPrice)) * 1.1} 
                                 step="0.01" 
                                 value={resalePrice} 
                                 on:input={(e) => handleInputChange(e, id)} 
