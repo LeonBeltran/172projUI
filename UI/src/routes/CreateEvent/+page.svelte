@@ -37,16 +37,18 @@
         const signer = await provider.getSigner();
         const contract = await initializeContract(signer);
 
-        totalTickets = parseInt(totalTickets)
-        ticketPrice = parseFloat(ticketPrice)
+        let totalTickets2 = parseInt(totalTickets);
+        let ticketPrice2 = parseFloat(ticketPrice);
 
-        await contract.createTicket(tokenURI, totalTickets, ticketPrice, ticketEndDate)
+        // console.log("To create");
+
+        await contract.createTicket(tokenURI, totalTickets2, ticketPrice2, ticketEndDate);
         alert("Successfully created new event!")
     }
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0x30E6Ba84Aff8277390B29cfE66c4735dE6D9767c",
+        "0x593CE72a79b197a2980c0f74CB22371Fff175118",
         ABI,
         signer
         );
@@ -75,7 +77,7 @@
         </div>
         <div>
             <label for="ticketEndDate">Ticket Expiry Date</label>
-            <input id="ticketEndDate" type="text" bind:value={ticketEndDate} required />
+            <input id="ticketEndDate" type="number" step="1" bind:value={ticketEndDate} required />
         </div>
         
         <div class="button-container">

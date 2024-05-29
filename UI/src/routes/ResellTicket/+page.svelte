@@ -63,7 +63,7 @@
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0x30E6Ba84Aff8277390B29cfE66c4735dE6D9767c",
+        "0x5c6ac0b8fc1b17a3fa11bca9f4f0dcc552a0d529",
         ABI,
         signer
         );
