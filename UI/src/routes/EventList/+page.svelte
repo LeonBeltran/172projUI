@@ -40,16 +40,36 @@
       ticketsArray = await getEvents();
     });
 
-    async function buyTicket(tokenId, ticketsToBuy) {
-      // Implement the logic to buy the ticket with the given tokenId
-      
+    async function buyTicket(tokenId, ticketsToBuy) { 
       const { ethereum } = window as any;
       const provider = new ethers.BrowserProvider(ethereum);
       const signer = await provider.getSigner();
       const contract = await initializeContract(signer);
       const account = await signer.getAddress();
 
-      await contract.purchaseTicket(tokenId, ticketsToBuy);
+      const ticket = await contract.getTicketInfo(tokenId);
+      console.log('Ticket Price');
+      console.log(ticket.ticketPrice);
+
+      console.log('Tickets to buy');
+      console.log(ticketsToBuy);
+
+      console.log('Total tickets');
+      console.log(ticket.totalTickets);
+
+      const purchaseFee = await contract.getPurchaseFeePercentage();
+      console.log('Purchase Fee');
+      console.log(purchaseFee);
+
+      const totalPrice = BigInt(ticket.ticketPrice) * BigInt(ticketsToBuy);
+      console.log('Total price');
+      console.log(totalPrice);
+
+      const totalPriceWithFee = BigInt(totalPrice) + BigInt(purchaseFee);
+      console.log('Total price with fee');
+      console.log(totalPriceWithFee);
+
+      await contract.purchaseTicket(tokenId, ticketsToBuy, { value: totalPriceWithFee });
     };
     
     const initializeContract = async (signer: JsonRpcSigner) => {
