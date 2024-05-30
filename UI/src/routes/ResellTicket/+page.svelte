@@ -15,17 +15,22 @@
         const account = await signer.getAddress();
         const ticketIDs = await contract.getUserTickets(account);
 
-        for (const tokenID of ticketIDs) {
-            const ticket = await contract.getTicketInfo(tokenID);
-            tickets = [...tickets, { ...ticket, id: tokenID }];
+        console.log("Ticket IDs: " + ticketIDs)
+
+        for (const ticketID of ticketIDs) {
+            const ticket = await contract.getTicketInfo(ticketID);
+            console.log(ticket)
         }
 
+        const ticket = await contract.getTicketInfo(10);
+        console.log(ticket)
+
         // Update resaleDetails after fetching tickets
-        resaleDetails = tickets.map(event => ({
-            ...event,
-            willSell: false,
-            resalePrice: ethers.utils.formatEther(event.ticketPrice)
-        }));
+        // resaleDetails = tickets.map(event => ({
+        //     ...event,
+        //     willSell: false,
+        //     resalePrice: ethers.utils.formatEther(event.ticketPrice)
+        // }));
     };
 
     let resaleDetails = [];
