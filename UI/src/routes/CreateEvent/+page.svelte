@@ -28,7 +28,7 @@
         let totalTickets2 = parseInt(totalTickets);
         let ticketPrice2 = parseFloat(ticketPrice);
 
-        // console.log("To create");
+        console.log("To create");
 
         await contract.createTicket(tokenURI, totalTickets2, ticketPrice2, ticketEndDate, {value : 10});
 
@@ -40,7 +40,7 @@
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0x593CE72a79b197a2980c0f74CB22371Fff175118",
+        "0x9375E8529319012270BAaAD771695479e7F08b0c",
         ABI,
         signer
         );
