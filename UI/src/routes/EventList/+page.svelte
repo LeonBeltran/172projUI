@@ -19,7 +19,7 @@
 
         const ticketsArray = [];
 
-        for (let n = 0; n <= 10; n++) {
+        for (let n = 0; n <= 2; n++) {
             const ticket = await contract.getTicketInfo(n);
             const ticketObject = {
                 tokenId: ticket[0],
@@ -77,7 +77,7 @@
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0x9375E8529319012270BAaAD771695479e7F08b0c",
+        "0xf8A5D04498F485a27A87B89a8A02e5E37AaBF431",
         ABI,
         signer
         );

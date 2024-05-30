@@ -32,15 +32,12 @@
 
         await contract.createTicket(tokenURI, totalTickets2, ticketPrice2, ticketEndDate, {value : 10});
 
-        let ticket = await contract.getTicketInfo(1);
-        console.log(ticket)
-
         alert("Successfully created new event!")
     }
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0x9375E8529319012270BAaAD771695479e7F08b0c",
+        "0xf8A5D04498F485a27A87B89a8A02e5E37AaBF431",
         ABI,
         signer
         );

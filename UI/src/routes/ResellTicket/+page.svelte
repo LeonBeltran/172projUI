@@ -57,7 +57,7 @@
         console.log('Ticket Price');
         console.log(ticket.ticketPrice);
 
-        console.log('Tickets to buy');
+        console.log('Tickets to sell');
         console.log(ticketToSell);
 
         console.log('Total tickets');
@@ -75,12 +75,12 @@
         console.log('Total price with fee');
         console.log(totalPriceWithFee);
 
-        await contract.resellTicket(tokenId, ticketToSell, { value: totalPriceWithFee });
+        await contract.resellTicket(tokenId, ticketToSell);
     };
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0x9375E8529319012270BAaAD771695479e7F08b0c",
+        "0xf8A5D04498F485a27A87B89a8A02e5E37AaBF431",
         ABI,
         signer
         );
