@@ -132,6 +132,11 @@
     text-overflow: ellipsis;
   }
 
+  /* Reduce margin between paragraphs */
+  .ticket-info p {
+    margin: 5px 0; /* Adjust this value to control spacing */
+  }
+
   .buy-button {
     position: absolute;
     bottom: 10px;
@@ -155,7 +160,7 @@
     border: 1px solid #ccc;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    text-align: center; /* Center align text inside dialog */
+    text-align: center;
   }
 
   .overlay {
@@ -195,23 +200,24 @@
   }
 
   .counter span {
-    margin: 0 10px; /* Add margin around the counter number for better spacing */
+    margin: 0 10px;
   }
 </style>
+
 
 <div class="ticket-container">
   {#each ticketsArray as ticket}
     <div class="ticket-box">
       <div class="ticket-info">
-        <p><strong>Token ID:</strong> {ticket.tokenId}</p>
+        <p><strong>Event ID:</strong> {ticket.tokenId}</p>
         <p><strong>Total Tickets:</strong> {ticket.totalTickets}</p>
         <p><strong>Tickets Sold:</strong> {ticket.ticketsSold}</p>
-        <p><strong>Ticket Price:</strong> {ticket.ticketPrice}</p>
-        <p><strong>Ticket Start Date:</strong> {ticket.ticketStartDate}</p>
-        <p><strong>Ticket End Date:</strong> {ticket.ticketEndDate}</p>
-        <p><strong>Ticket Hold Date:</strong> {ticket.ticketHoldDate}</p>
-        <p><strong>Creator:</strong> {ticket.creator}</p>
-        <p><strong>Ticket Sold:</strong> {ticket.ticketSold}</p>
+        <p><strong>Price:</strong> {ticket.ticketPrice}</p>
+        <p><strong>Start Timestamp:</strong> {ticket.ticketStartDate}</p>
+        <p><strong>End Timestamp:</strong> {ticket.ticketEndDate}</p>
+        <p><strong>Hold Timestamp:</strong> {ticket.ticketHoldDate}</p>
+        <p><strong>Creator Public Address:</strong> {ticket.creator}</p>
+        <p><strong>Soldout:</strong> {ticket.ticketSold}</p>
         <!-- <p><strong>Is Resellable:</strong> {ticket.isResellable}</p> -->
       </div>
       <button class="buy-button" on:click={() => openDialog(ticket)}>Buy an event ticket</button> 

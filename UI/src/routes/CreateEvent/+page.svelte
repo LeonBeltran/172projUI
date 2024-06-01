@@ -61,11 +61,12 @@
             <input id="totalTickets" type="number" step="1" min="0" bind:value={totalTickets} required />
         </div>
         <div>
-            <label for="ticketPrice">Ticket Price in ETH:</label>
-            <input id="ticketPrice" type="number" step=0.000001 min="0" bind:value={ticketPrice} required />
+            <!-- I think its in Wei -->
+            <label for="ticketPrice">Ticket Price in Wei:</label>
+            <input id="ticketPrice" type="number" step="1" min="0" bind:value={ticketPrice} required />
         </div>
         <div>
-            <label for="ticketEndDate">Ticket Expiry Date</label>
+            <label for="ticketEndDate">Ticket Expiry Timestamp:</label>
             <input id="ticketEndDate" type="number" step="1" bind:value={ticketEndDate} required />
         </div>
         
