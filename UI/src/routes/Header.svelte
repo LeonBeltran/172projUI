@@ -25,8 +25,8 @@
 			<li aria-current={$page.url.pathname.startsWith('/CreateEvent') ? 'page' : undefined}>
 				<a href="/CreateEvent">Add Event</a>
 			</li>
-			<li aria-current={$page.url.pathname.startsWith('/ResellTicket') ? 'page' : undefined}>
-				<a href="/ResellTicket">Resell Tickets</a>
+			<li aria-current={$page.url.pathname.startsWith('/ViewTickets') ? 'page' : undefined}>
+				<a href="/ViewTickets">View Purchased Tickets</a>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">

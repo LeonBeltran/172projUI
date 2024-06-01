@@ -19,11 +19,11 @@
 
         const ticketsArray = [];
 
-        const ticketIds = await contract.getUserTickets(account)
-        console.log(ticketIds)
+        const ticketIds = await contract.getUserTickets(account);
+        console.log("Ticket Array: " + ticketIds);
 
         for (let n in ticketIds) {
-            const ticket = await contract.getTicketInfo(n);
+            const ticket = await contract.getTicketInfo(ticketIds[n]);
             const ticketObject = {
                 tokenId: ticket[0],
                 totalTickets: ticket[1],
@@ -80,7 +80,7 @@
 
     const initializeContract = async (signer: JsonRpcSigner) => {
         return new Contract(
-        "0xf8A5D04498F485a27A87B89a8A02e5E37AaBF431",
+        "0xBc831cF371080D11f081b79cb52614F3FFD99D44",
         ABI,
         signer
         );
@@ -210,23 +210,8 @@
         <p><strong>Ticket Hold Date:</strong> {ticket.ticketHoldDate}</p>
         <p><strong>Creator:</strong> {ticket.creator}</p>
         <p><strong>Ticket Sold:</strong> {ticket.ticketSold}</p>
-        <p><strong>Is Resellable:</strong> {ticket.isResellable}</p>
+        <!-- <p><strong>Is Resellable:</strong> {ticket.isResellable}</p> -->
       </div>
-      <button class="buy-button" on:click={() => openDialog(ticket)}>Sell an event ticket</button> 
     </div>
   {/each}
 </div>
-
-{#if showDialog}
-  <div class="overlay" on:click={closeDialog}></div>
-  <div class="dialog">
-    <h3>Number of tickets</h3>
-    <div class="counter">
-      <button on:click={() => ticketToSell = Math.max(1, ticketToSell - 1)}>-</button>
-      <span>{ticketToSell}</span>
-      <button on:click={() => ticketToSell += 1}>+</button>
-    </div>
-    <button class="confirm-button" on:click={confirmPurchase}>Confirm Transaction</button>
-    <button class="cancel-button" on:click={closeDialog}>Cancel</button>
-  </div>
-{/if}
